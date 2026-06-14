@@ -34,6 +34,15 @@ func (UHandler *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request){
 		http.Error(w,"The login payload is invalid...",http.StatusBadRequest)
 		return
 	}
+
+	//call the repo to Login
+	AuthToken,err:= UHandler.AuthService.LoginUser(&LoginUser)
+	if err!= nil{
+		http.Error(w,err.Error(),http.StatusInternalServerError)
+		return
+	}
 	
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(AuthToken)
 }
 
