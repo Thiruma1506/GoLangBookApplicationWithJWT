@@ -11,17 +11,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type Repository interface {
+type UserRepository interface {
 	FindUserByEmail(email string) (*model.User,error)
 	CreateNewUser(user *model.User) error
 }
 
-type UserRepository struct {
+type UserRepositoryImpl struct {
 	collection *mongo.Collection
 }
 
-func NewUserRepository(db *mongo.Database) Repository {
-	return &UserRepository{
+func NewUserRepository(db *mongo.Database) UserRepository {
+	return &UserRepositoryImpl{
 		collection: db.Collection("UserCollection"),
 	}
 }
@@ -32,7 +32,7 @@ func createUserCtx() (context.Context, context.CancelFunc) {
 }
 
 // CreateNewUser implements [Repository].
-func (Urepo *UserRepository) CreateNewUser(user *model.User) error {
+func (Urepo *UserRepositoryImpl) CreateNewUser(user *model.User) error {
 	ctx, cancel := createUserCtx()
 	defer cancel()
 
@@ -46,7 +46,7 @@ func (Urepo *UserRepository) CreateNewUser(user *model.User) error {
 }
 
 // FindUserByEmail implements [Repository].
-func (Urepo *UserRepository) FindUserByEmail(email string) (*model.User, error) {
+func (Urepo *UserRepositoryImpl) FindUserByEmail(email string) (*model.User, error) {
 	ctx, cancel := createUserCtx()
 	defer cancel()
 
